@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logo.jpg" type="image/icon type">
+    <title>Share Form</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #74ebd5, #acb6e5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .share-modal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .share-modal-content {
+            background-color: #ffffff;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .share-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .share-modal-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #555;
+        }
+
+        .share-input {
+            margin: 20px 0;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 1em;
+        }
+
+        .access-options {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .access-options label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .access-options select,
+        .access-options input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 1em;
+        }
+
+        .share-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .share-actions button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .copy-link {
+            background-color: #f0f0f0;
+        }
+
+        .copy-link:hover {
+            background-color: #e0e0e0;
+        }
+
+        .done-button {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .done-button:hover {
+            background-color: #0056b3;
+        }
+
+        .extra-options {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .extra-options label {
+            display: inline-block;
+            margin-bottom: 5px;
+            font-weight: normal;
+            color: #333;
+        }
+
+        .extra-options input {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="share-modal" aria-hidden="true" role="dialog" aria-labelledby="shareDialogTitle" aria-modal="true">
+    <div class="share-modal-content">
+        <div class="share-modal-header">
+            <h2 id="shareDialogTitle">Share</h2>
+            <button class="close-modal" aria-label="Close share dialog">&times;</button>
+        </div>
+        <input type="text" class="share-input" placeholder="Add people or groups" aria-label="Add people or groups">
+
+        <div class="access-options">
+            <label for="access-select">General access</label>
+            <select id="access-select" aria-label="General access">
+                <option value="restricted">Restricted</option>
+                <option value="anyone">Anyone with the link</option>
+                <option value="specific-people">Specific people</option>
+            </select>
+
+            <label for="expiry-date">Set expiration date</label>
+            <input type="date" id="expiry-date" aria-label="Set expiration date">
+
+            <label for="time-restriction">Time restriction (hours)</label>
+            <input type="number" id="time-restriction" min="0" placeholder="Enter number of hours" aria-label="Time restriction in hours">
+        </div>
+
+        <div class="extra-options">
+            <label><input type="checkbox" id="notify" checked aria-label="Notify people"> Notify people</label>
+            <label><input type="checkbox" id="view-only" aria-label="View only"> View only</label>
+            <label><input type="checkbox" id="prevent-download" aria-label="Prevent download"> Prevent download</label>
+        </div>
+
+        <div class="share-actions">
+            <button class="copy-link">Copy link</button>
+            <button class="done-button">Done</button>
+        </div>
+
+        <div class="share-modal-footer">
+            <p>Control who can access and for how long. Customize permissions and restrictions as needed.</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

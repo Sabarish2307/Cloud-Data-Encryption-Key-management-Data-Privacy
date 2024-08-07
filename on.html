@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drive | Eyeonsecurity</title>
+    <link rel="icon" href="logo.jpg" type="image/icon type">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/10.12.5/css/all.min.css" integrity="sha512-KyZXEAg3QhqLMpG8r+Knujsl5e5hb7ip6K5wpVka5QY5r6Gh6mk4X+1z4A9Il0v5nJcrA9/Zw+sD6qba2wG/Hw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+    <style>
+        /* Your existing styles here */
+        body {
+            display: flex;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('backpage.avif');
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color:rgb(143, 135, 175);
+            background-image: url('backpage.avif');
+            color: #1f1d1d;
+            height: 100vh;
+            position: fixed;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #212122;
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            padding: 15px 20px;
+            border-bottom: 1px solid #1d1c1c;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar-menu li:hover {
+            background-color: #2c3e50;
+        }
+
+        .sidebar-menu li i {
+            margin-right: 10px;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(231, 226, 226, 0.1);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input {
+            padding: 10px;
+            border: 1px solid rgba(243, 237, 237, 0.9);
+            border-radius: 4px;
+            width: 300px;
+            margin-right: 20px;
+            background-color: rgba(247, 240, 240, 0.5);
+            color: #000;
+        }
+
+        .header-buttons {
+            position: relative;
+        }
+
+        .header-buttons button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            background-color: rgba(243, 237, 237, 0.9);
+            color: #1b1a1a;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .header-buttons button:hover {
+            background-color: rgb(72, 109, 134);
+        }
+
+        .header-buttons .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: rgba(243, 237, 237, 0.9);
+            color: #fff;
+            border-radius: 8px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .header-buttons .dropdown a {
+            padding: 10px 20px;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-buttons .dropdown a:hover {
+            background-color: rgba(68, 68, 68, 0.9);
+        }
+
+        .header-buttons .dropdown a i {
+            margin-right: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .invite-members {
+            padding: 10px 20px;
+            background-color: rgba(243, 237, 237, 0.9);
+            color: #252525;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .invite-members:hover {
+            background-color: rgba(33, 136, 56, 0.8);
+        }
+
+        .notification {
+            position: relative;
+            margin-right: 20px;
+        }
+
+        .notification i {
+            font-size: 20px;
+            color: rgba(19, 20, 20, 0.8);
+        }
+
+        .notification .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: rgba(255, 0, 0, 0.8);
+            color: #1b1a1a;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+        }
+
+        .username {
+            background-color: rgba(243, 237, 237, 0.9);
+            color: #141414;
+            padding: 10px 15px;
+            border-radius: 50%;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: rgba(249, 249, 249, 0.9);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: rgba(241, 241, 241, 0.9);
+        }
+
+        .suggested, .all-files {
+            margin-top: 20px;
+        }
+
+        .suggested h3, .all-files h3 {
+            margin-bottom: 15px;
+            color: #000;
+        }
+
+        .folder-thumbnails {
+            display: flex;
+            gap: 20px;
+        }
+
+        .folder {
+            background-color: rgba(243, 237, 237, 0.9);
+            padding: 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
+            flex: 1;
+            color: #000;
+        }
+
+        .folder:hover {
+            background-color: rgba(221, 221, 221, 0.9);
+        }
+
+        .view-options {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        .view-options button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            background-color: rgba(243, 237, 237, 0.9);
+            color: #1b1a1a;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .view-options button:hover {
+            background-color: rgba(0, 86, 179, 0.8);
+        }
+
+        .file-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .file-item {
+            background-color: rgba(243, 237, 237, 0.9);
+            padding: 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
+            box-sizing: border-box;
+            color: #000;
+        }
+
+        .file-item.list-view {
+            flex: 1 1 calc(100% - 20px);
+        }
+
+        .file-item.grid-view {
+            flex: 1 1 calc(50% - 20px);
+            height: 0;
+            padding-bottom: 50%;
+        }
+
+        .file-item:hover {
+            background-color: rgba(252, 250, 250, 0.9);
+        }
+
+        .share-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: rgba(51, 51, 51, 0.9);
+            color: #fff;
+            border-radius: 8px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .share-dropdown a {
+            padding: 10px 20px;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .share-dropdown a:hover {
+            background-color: rgba(68, 68, 68, 0.9);
+        }
+
+        .share-dropdown a i {
+            margin-right: 10px;
+        }
+        
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+        }
+        
+
+        .toast.show {
+            display: block;
+        }
+
+        .toast.success {
+            background-color: #28a745;
+        }
+
+        .toast.error {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <!-- Sidebar content -->
+        <div class="sidebar-header">
+            <h2><img src="logo.jpg" alt="Logo" style="width: 30px; height: 30px; vertical-align: middle; margin-right: 10px;"> Eyeonsecurity</h2>
+            <button class="add-member"><i class="fas fa-plus"></i></button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><i class="fas fa-folder"></i> All files</li>
+            <li><i class="fas fa-file-signature"></i> Signatures</li>
+            <li><i class="fas fa-paper-plane"></i> Send and track</li>
+            <li><i class="fas fa-share-alt"></i> Shared</li>
+            <li><i class="fas fa-cog"></i> Admin console</li>
+            <li><i class="fas fa-ellipsis-h"></i> More</li>
+        </ul>
+    </div>
+    
+    <div class="main-content">
+        <header>
+            <div class="search-bar">
+                <input type="text" placeholder="Search">
+                <div class="header-buttons">
+                    <button onclick="toggleCreateMenu()"><i class="fas fa-plus"></i> Create</button>
+                    <div class="dropdown" id="createMenu">
+                        <a href="#"><i class="fas fa-folder"></i> Folder</a>
+                        <a href="#"><i class="fas fa-file-alt"></i> Document</a>
+                        <a href="#"><i class="fas fa-video"></i> Screen recording</a>
+                        <a href="#"><i class="fas fa-chalkboard"></i> Presentation</a>
+                        <a href="#"><i class="fas fa-table"></i> Spreadsheet</a>
+                        <a href="#"><i class="fas fa-link"></i> Web shortcut</a>
+                        <hr>
+                        <a href="#"><i class="fas fa-upload"></i> Upload</a>
+                        <a href="#"><i class="fas fa-file-import"></i> Send file request</a>
+                        <hr>
+                        <a href="#"><i class="fas fa-edit"></i> Edit</a>
+                        <a href="#"><i class="fas fa-signature"></i> Sign</a>
+                    </div>
+                    <button id="uploadButton">Upload File</button>
+                    <input type="file" id="fileInput" style="display: none;" />
+                    
+                    <input type="file" id="fileInput" style="display: none;">
+                    <a href="share.html">  <button onclick=""><i class="fas fa-folder-plus"></i> Share</button></a>
+                    <div class="share-dropdown" id="shareMenu">
+                        <a href="#"><i class="fas fa-envelope"></i> Email</a>
+                        <a href="#"><i class="fas fa-link"></i> Shareable Link</a>
+                        <a href="#"><i class="fas fa-clock"></i> Time Restriction</a>
+                    </div>
+                    <button><i class="fas fa-file-pdf"></i> Edit PDF</button>
+                    <button><i class="fas fa-signature"></i> Get signatures</button>
+                </div>
+            </div>
+            <div class="user-info">
+                <button class="invite-members">Invite members</button>
+                <div class="notification">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="dropdown">
+                    <span class="username">E</span>
+                    <div class="dropdown-content">
+                        <a href="#">Profile</a>
+                        <a href="#">Settings</a>
+                        <a href="#" onclick="logout()">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <section class="suggested">
+            <h3>Suggested from your activity</h3>
+            <div class="folder-thumbnails">
+                <div class="folder">Eyeonsecurity</div>
+                <div class="folder">Send and track</div>
+                <div class="folder">ADD folder</div>
+                <div class="folder">sample file</div>
+            </div>
+        </section>
+        <section class="all-files">
+            <div class="view-options">
+                <button class="view-list"><i class="fas fa-list"></i> List</button>
+                <button class="view-grid"><i class="fas fa-th"></i> Grid</button>
+            </div>
+            <div class="file-list">
+                <div class="file-item list-view">ADD folder</div>
+                <div class="file-item list-view">ADD folder</div>
+                <div class="file-item list-view">ADD folder</div>
+                <div class="file-item list-view">ADD folder</div>
+            </div>
+        </section>
+    </div>
+    
+   
+    <!-- Toast notification container -->
+    <div id="toast" class="toast"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
+    
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCPvH7G4fAXqA32lwocGCVqCsvzsmxfijU",
+            authDomain: "eye-ae719.firebaseapp.com",
+            projectId: "eye-ae719",
+            storageBucket: "eye-ae719.appspot.com",
+            messagingSenderId: "416292408573",
+            appId: "1:416292408573:web:7f8acdb9c67c34b77bc294"
+        };
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+    
+        const fileInput = document.getElementById('fileInput');
+        const uploadButton = document.getElementById('uploadButton');
+        const downloadButton = document.getElementById('downloadButton');
+        const downloadFileNameInput = document.getElementById('downloadFileName');
+        const toast = document.getElementById('toast');
+    
+        const encryptionKey = "your-encryption-key"; // Use a strong key in practice
+    
+        function showToast(message, type) {
+            toast.textContent = message;
+            toast.className = `toast show ${type}`;
+            setTimeout(() => {
+                toast.className = `toast ${type}`;
+            }, 3000);
+        }
+    
+        async function encryptFile(file) {
+            const reader = new FileReader();
+            return new Promise((resolve, reject) => {
+                reader.onload = () => {
+                    try {
+                        const fileData = reader.result;
+                        const encrypted = CryptoJS.AES.encrypt(fileData, encryptionKey).toString();
+                        resolve(encrypted);
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                reader.onerror = (error) => reject(error);
+                reader.readAsBinaryString(file);
+            });
+        }
+    
+        async function decryptFile(encryptedData) {
+            try {
+                const bytes = CryptoJS.AES.decrypt(encryptedData, encryptionKey);
+                const originalData = bytes.toString(CryptoJS.enc.Utf8);
+                return originalData;
+            } catch (error) {
+                throw new Error('Decryption failed: ' + error.message);
+            }
+        }
+    
+        uploadButton.addEventListener('click', () => {
+            fileInput.click();
+        });
+    
+        fileInput.addEventListener('change', async () => {
+            const file = fileInput.files[0];
+            if (!file) {
+                showToast("No file selected.", "error");
+                return;
+            }
+    
+            try {
+                const encryptedFileData = await encryptFile(file);
+                const storageRef = ref(storage, `uploads/${file.name}`);
+                
+                // Convert encrypted data to Blob for uploading
+                const blob = new Blob([encryptedFileData], { type: 'text/plain' });
+                const snapshot = await uploadBytes(storageRef, blob);
+                console.log('Uploaded a blob or file!', snapshot);
+    
+                const downloadURL = await getDownloadURL(snapshot.ref);
+                console.log('File available at', downloadURL);
+                showToast(`File uploaded successfully!!!!!`, "success");
+            } catch (error) {
+                console.error('Error encrypting or uploading file:', error);
+                showToast(`Error encrypting or uploading file: ${error.message}`, "error");
+            }
+        });
+    
+        downloadButton.addEventListener('click', async () => {
+            const fileName = downloadFileNameInput.value;
+            if (!fileName) {
+                showToast("Please enter a file name.", "error");
+                return;
+            }
+    
+            const storageRef = ref(storage, `uploads/${fileName}`);
+    
+            try {
+                const downloadURL = await getDownloadURL(storageRef);
+                const response = await fetch(downloadURL);
+                const encryptedData = await response.text();
+                const decryptedData = await decryptFile(encryptedData);
+    
+                // Create a Blob and download the decrypted file
+                const blob = new Blob([decryptedData], { type: 'text/plain' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                link.click();
+    
+                showToast(`File downloaded and decrypted successfully!`, "success");
+            } catch (error) {
+                console.error('Error downloading or decrypting file:', error);
+                showToast(`Error downloading or decrypting file: ${error.message}`, "error");
+            }
+        });
+    </script>
+    
+</body>
+</html>
