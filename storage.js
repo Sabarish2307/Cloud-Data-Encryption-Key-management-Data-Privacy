@@ -9,12 +9,7 @@
 <script>
  // Firebase configuration
  const firebaseConfig = {
-apiKey: "AIzaSyCPvH7G4fAXqA32lwocGCVqCsvzsmxfijU",
-authDomain: "eye-ae719.firebaseapp.com",
-projectId: "eye-ae719",
-storageBucket: "eye-ae719.appspot.com",
-messagingSenderId: "416292408573",
-appId: "1:416292408573:web:7f8acdb9c67c34b77bc294"
+
  };
 
  // Initialize Firebase
